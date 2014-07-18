@@ -1,0 +1,8 @@
+#!/bin/bash -v
+#install apache web server
+yum -y install httpd
+#start apache web server
+service httpd start
+# create 'web-xx hostname' index page 
+echo "<h1>WEB-01 $HOSTNAME</h1>" > /var/www/html/index.html
+

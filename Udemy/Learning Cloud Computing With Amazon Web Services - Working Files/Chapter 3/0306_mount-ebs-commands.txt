@@ -1,0 +1,8 @@
+#format the disk
+sudo mke2fs -F -j /dev/sdf
+# make a directory where we can access the disk
+sudo mkdir /mnt/newdisk
+# mount the disk to make it available
+sudo mount /dev/sdf /mnt/newdisk
+# verify that we can see the disk
+df -h /mnt/newdisk/

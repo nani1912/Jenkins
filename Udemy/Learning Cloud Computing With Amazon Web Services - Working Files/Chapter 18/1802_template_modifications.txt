@@ -1,0 +1,48 @@
+# the base "Drupal_Multi_AZ.template" CloudFormation template is broken in some ways...
+# the 'Fn::GetAZs' parameter will actually pull in ALL the AZs available for this Region
+# let's instead change that to hardcode balancing between 'AZ-a' and 'AZ-b' in us-east Region
+# NOTE: this 'hardcodes' the template to only work in us-east. If you're using another Region, you'll need to alter accordingly
+
+# first change, replace every instance of this string:
+{ "Fn::GetAZs" : "" }
+# with:
+[ "us-east-1a", "us-east-1b" ]
+# you should replace twice only -- once in "ElasticLoadBalancer" and once in "WebServerGroup"
+# for WebServerGroup, the final result should look like:
+    "WebServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : [ "us-east-1a", "us-east-1b" ],
+
+# next, under the "WebServerGroup", change the "MinSize" to 2, so that we have at least 2 instances running
+# and we'll set the "MaxSize" to 6 (a factor of our 2AZs we're balancing across)
+# with the change we made above, this will ensure that each AZ has at least one instance running at any given time
+# The section before the change:
+    "WebServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : [ "us-east-1a", "us-east-1b" ],
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : "1",
+	"MaxSize" : "5",
+# and after (last two lines changed):
+    "WebServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : [ "us-east-1a", "us-east-1b" ],
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : "2",
+	"MaxSize" : "6",
+
+# this template appears to have a bug in it and the 2nd instance we spin up always fails on Drupal.
+# this is actually a good thing for us because we can quickly see which web server (a or b) is serving up traffic
+# "A" will respond with a "good" Drupal install, "B" will respond with a "failed" install
+# however, we have to change the health check on the ELB as the 2nd server gives us a 302 redirect
+# under the "ElasticLoadBalancer" part of the template, identify the area "Health Check".
+# We're going to change the "Target" to "TCP:80" from "HTTP:80"
+# the section before the change:
+        "HealthCheck" : {
+          "Target" : "HTTP:80/",
+# and after (only last line changed):
+        "HealthCheck" : {
+          "Target" : "TCP:80",

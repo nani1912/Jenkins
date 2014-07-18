@@ -1,0 +1,59 @@
+    "WebServerScaleUpPolicy" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "WebServerGroup" },
+        "Cooldown" : "60",
+        "ScalingAdjustment" : "2"
+      }
+    },
+    "WebServerScaleDownPolicy" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "WebServerGroup" },
+        "Cooldown" : "60",
+        "ScalingAdjustment" : "-2"
+      }
+    },
+
+    "CPUAlarmHigh": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "AlarmDescription": "Scale-up if ELB Latency > 200ms",
+        "MetricName": "Latency",
+        "Namespace": "AWS/ELB",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "2",
+        "Threshold": ".2",
+        "AlarmActions": [ { "Ref": "WebServerScaleUpPolicy" } ],
+        "Dimensions": [
+          {
+            "Name": "LoadBalancerName",
+            "Value": { "Ref" : "ElasticLoadBalancer" }
+          }
+        ],
+        "ComparisonOperator": "GreaterThanThreshold"
+      }
+    },
+    "CPUAlarmLow": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "AlarmDescription": "Scale-down if ELB Latency < 100ms",
+        "MetricName": "Latency",
+        "Namespace": "AWS/ELB",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "2",
+        "Threshold": ".1",
+        "AlarmActions": [ { "Ref": "WebServerScaleDownPolicy" } ],
+        "Dimensions": [
+          {
+            "Name": "LoadBalancerName",
+            "Value": { "Ref" : "ElasticLoadBalancer" }
+          }
+        ],
+        "ComparisonOperator": "LessThanThreshold"
+      }
+    },

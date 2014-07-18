@@ -1,0 +1,27 @@
+# 'siege' is the software package we'll use to load test our application
+# all of these commands are meant to be run on your 'siege' server. log in there now
+
+# fist, become root to ease the install and use of siege
+sudo su -
+# next, CD into your /usr/local/src directory, where we will install siege
+cd /usr/local/src
+# siege needs these packages, install them now
+yum install -y mod_ssl openssl gcc
+# get the 'siege package' (JoeDog is the company who provides siege)
+wget http://www.joedog.org/pub/siege/siege-latest.tar.gz
+# untar the package
+tar -xvzf siege-latest.tar.gz
+# go into the untar directory (NOTE: your version of siege may be newer -- like 3.0.1)
+cd siege-3.0.0/
+# make and install the package (you can always review the "INSTALL" file for details)
+./configure
+make
+make install
+# now that siege is installed, you can use it to send traffic to your Drupal stack
+# the following command will send 20 concurrent requests (-c20) for 7 minutes (-t7M) to 'mysite.com'
+# this should be sufficient to trigger the alarms that we set in order to add instances to our autoscaling group
+siege -c20 -t7M http://mysite.com
+# to test your actual Drupal site, in the command above, replace 'mysite.com' with the actual DNS of your load balancer
+# for example, I used:
+siege -c20 -t7M http://DrupalThr-ElasticL-1BS80WBQ3Z3N4-1498898650.us-east-1.elb.amazonaws.com
+# where 'DrupalThr-ElasticL-1BS80WBQ3Z3N4-1498898650.us-east-1.elb.amazonaws.com' was my ELB's DNS name
