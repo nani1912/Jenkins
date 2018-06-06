@@ -8,8 +8,8 @@ import sys
 import urllib2
 import base64
 
-user = Nani 
-password = Nani
+user = 'Nani' 
+password = 'Nani'
 jenkinsUrl = 'http://52.91.248.252:8080'
 
 
