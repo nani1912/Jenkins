@@ -10,7 +10,7 @@ import base64
 
 user = Nani 
 password = Nani
-jenkinsUrl = http://52.91.248.252:8080
+jenkinsUrl = 'http://52.91.248.252:8080'
 
 
 def urlopen(url, data=None):
