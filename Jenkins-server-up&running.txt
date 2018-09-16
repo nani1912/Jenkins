@@ -1,0 +1,15 @@
+## Jenkins installation on AWS EC2
+
+1: yum update -y
+2:  sudo yum install -y git  java-1.8.0-openjdk-devel aws-cli
+	sudo alternatives --config java
+3:  sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo 
+    sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
+    sudo yum install jenkins
+    sudo service jenkins start
+    sudo chkconfig --add jenkins
+That’s it! Now you can go to URL http://<instance ip>:8080
+4: go to file/var/lib/jenkins/secrets/initialAdminPassword , copy the password and paste it in “administrator password” input box. Then press continue.
+5: Select install suggested plugins.
+6: Next, it will ask for admin credential. You can skip this step and click on continue as admin or you can fill in the required information.
+*ALL Done with Jenkins setup*
