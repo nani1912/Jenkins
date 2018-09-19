@@ -1,0 +1,50 @@
+DevOps Stages:
+
+1: Version Control: Maintaining diff versions of code (source code management)
+    [Diff devlopers are write the code for devloping the app. How do we know which devloper monit which code at what time, and exactly which commit causeing the error 
+    and how do i go back and change tmy code (How I amanage in source code) ] {Git/SVN}
+2: Continous Intigration: Building app continuosly (Continous Build)
+   [Dovloper made some changes in the source code should be able to pull that code from Git and prepare for a build]
+   [Build: Is responsable for comlaie the code, validating, unit testing and integartion testing]
+   [Unit Testing: is Testing each part of the code and Integation testing: is How diff parts work togather]
+3: Continous Delivery: Need to test the code in test environment!
+4: Continous Deployment: Deploying the tested app in Prod serversfor release!   
+
+Once the above steps done "Continous Monitoring" will takes plase using {LM,Nagiuos,Splunk..etc}
+
+Integation: Jenkins servers
+
+CI & CD Pipeline Works: It is an SDLC process
+Steps:
+ 1: Version Control {CI}
+    2: Build {CI}
+        3: Unit Testing {CI}
+            4: Deploying  {Continous Delivery}
+                5: Auto Testing 
+                    6: Deploying to Production {Continous Deployment}
+
+In every step if we found any error the devlopment team again push their code into Version Control
+Again it will go to the complete pipeline (CI)!
+
+
+Jenkins: After all the steps performed it will create a package or war file! 
+For deploying the code we need Docker!
+    
+Docker: 
+1: Build the server and deploy the code 
+2: It will provide the replication of production server in few minutes 
+3: It will reate an image through image run the containers
+
+
+Hands-On:
+1: build the Jenkins Server!
+2: Install docker!
+3: login Jenkins server and create pipeline for (Build, Test, Deploy)!
+4: Create 3 job's!
+5: now create a pipeline!
+6: Mention Git repo name in all 3 jobs in source code management under configure!
+7: Mention the code in build phase in 3 jobs (acc to job)!
+8: Here choose what job to be perform next in job configure select post-build actions select (Build other projects) and give your next excution job name! & and follow for 3 jobs!
+9: Now create a pipeline first install plugins for pipeline!
+10: under pipeline configure select next job excution 
+11: finally run the pipeline! 
